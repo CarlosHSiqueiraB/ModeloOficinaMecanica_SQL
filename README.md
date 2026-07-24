@@ -232,3 +232,5 @@ O frontend é uma aplicação vanilla HTML/CSS/JS localizada na pasta `../Oficin
 cd ../OficinaMecanicaFrontend
 python3 -m http.server 5500
 ```
+
+PS: Eu dei um force na main e perdi o diagrama original 👀
