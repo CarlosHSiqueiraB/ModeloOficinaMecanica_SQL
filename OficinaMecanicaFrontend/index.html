@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oficina do Carlão - Sistema de Gestão</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="Styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        'primary-dark': '#1e3a8a',
+                        secondary: '#f59e0b',
+                        'secondary-dark': '#d97706',
+                        dark: '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-dark text-white transform transition-transform duration-300 z-50">
+        <div class="p-6 border-b border-gray-700">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-wrench text-secondary text-2xl"></i>
+                <div>
+                    <h1 class="text-xl font-bold">Oficina do Carlão</h1>
+                    <p class="text-xs text-gray-400">Sistema de Gestão</p>
+                </div>
+            </div>
+        </div>
+        <nav class="mt-4">
+            <a href="#" data-page="dashboard" class="nav-link flex items-center gap-3 px-6 py-3 hover:bg-gray-700 transition-colors active">
+                <i class="fas fa-home w-5"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" data-page="clientes" class="nav-link flex items-center gap-3 px-6 py-3 hover:bg-gray-700 transition-colors">
+                <i class="fas fa-users w-5"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="#" data-page="veiculos" class="nav-link flex items-center gap-3 px-6 py-3 hover:bg-gray-700 transition-colors">
+                <i class="fas fa-car w-5"></i>
+                <span>Veículos</span>
+            </a>
+            <a href="#" data-page="mecanicos" class="nav-link flex items-center gap-3 px-6 py-3 hover:bg-gray-700 transition-colors">
+                <i class="fas fa-user-gear w-5"></i>
+                <span>Mecânicos</span>
+            </a>
+            <a href="#" data-page="equipes" class="nav-link flex items-center gap-3 px-6 py-3 hover:bg-gray-700 transition-colors">
+                <i class="fas fa-people-group w-5"></i>
+                <span>Equipes</span>
+            </a>
+            <a href="#" data-page="servicos" class="nav-link flex items-center gap-3 px-6 py-3 hover:bg-gray-700 transition-colors">
+                <i class="fas fa-screwdriver-wrench w-5"></i>
+                <span>Serviços</span>
+            </a>
+            <a href="#" data-page="pecas" class="nav-link flex items-center gap-3 px-6 py-3 hover:bg-gray-700 transition-colors">
+                <i class="fas fa-cogs w-5"></i>
+                <span>Peças</span>
+            </a>
+            <a href="#" data-page="ordens-servico" class="nav-link flex items-center gap-3 px-6 py-3 hover:bg-gray-700 transition-colors">
+                <i class="fas fa-clipboard-list w-5"></i>
+                <span>Ordens de Serviço</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div id="main-content" class="ml-64 transition-all duration-300">
+        <!-- Top Bar -->
+        <header class="bg-white shadow-sm sticky top-0 z-40">
+            <div class="flex items-center justify-between px-6 py-4">
+                <button id="menu-toggle" class="text-gray-600 hover:text-primary transition-colors">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-gray-500" id="current-date"></span>
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="p-6">
+            <!-- Dashboard Page -->
+            <div id="page-dashboard" class="page-content">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Dashboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Clientes</p>
+                                <p class="text-2xl font-bold text-gray-800" id="count-clientes">0</p>
+                            </div>
+                            <i class="fas fa-users text-blue-500 text-3xl opacity-50"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Veículos</p>
+                                <p class="text-2xl font-bold text-gray-800" id="count-veiculos">0</p>
+                            </div>
+                            <i class="fas fa-car text-green-500 text-3xl opacity-50"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Ordens Abertas</p>
+                                <p class="text-2xl font-bold text-gray-800" id="count-os-abertas">0</p>
+                            </div>
+                            <i class="fas fa-clipboard-list text-yellow-500 text-3xl opacity-50"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Mecânicos</p>
+                                <p class="text-2xl font-bold text-gray-800" id="count-mecanicos">0</p>
+                            </div>
+                            <i class="fas fa-user-gear text-purple-500 text-3xl opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">Ordens de Serviço Recentes</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="py-2 px-4 text-sm font-semibold text-gray-600">ID</th>
+                                    <th class="py-2 px-4 text-sm font-semibold text-gray-600">Veículo</th>
+                                    <th class="py-2 px-4 text-sm font-semibold text-gray-600">Equipe</th>
+                                    <th class="py-2 px-4 text-sm font-semibold text-gray-600">Status</th>
+                                    <th class="py-2 px-4 text-sm font-semibold text-gray-600">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-os-table">
+                                <tr>
+                                    <td colspan="5" class="py-4 text-center text-gray-400">Nenhuma ordem encontrada</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clientes Page -->
+            <div id="page-clientes" class="page-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Clientes</h2>
+                    <button onclick="openModal('cliente-modal')" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                        <i class="fas fa-plus"></i> Novo Cliente
+                    </button>
+                </div>
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">ID</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Nome</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">CPF</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Telefone</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Email</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientes-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Veículos Page -->
+            <div id="page-veiculos" class="page-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Veículos</h2>
+                    <button onclick="openModal('veiculo-modal')" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                        <i class="fas fa-plus"></i> Novo Veículo
+                    </button>
+                </div>
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">ID</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Marca</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Modelo</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Ano</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Placa</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Cor</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Cliente</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="veiculos-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mecânicos Page -->
+            <div id="page-mecanicos" class="page-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Mecânicos</h2>
+                    <button onclick="openModal('mecanico-modal')" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                        <i class="fas fa-plus"></i> Novo Mecânico
+                    </button>
+                </div>
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">ID</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Nome</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">CPF</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Especialidade</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Telefone</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mecanicos-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipes Page -->
+            <div id="page-equipes" class="page-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Equipes Mecânicas</h2>
+                    <button onclick="openModal('equipe-modal')" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                        <i class="fas fa-plus"></i> Nova Equipe
+                    </button>
+                </div>
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">ID</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Nome</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Mecânico Responsável</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="equipes-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Serviços Page -->
+            <div id="page-servicos" class="page-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Serviços</h2>
+                    <button onclick="openModal('servico-modal')" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                        <i class="fas fa-plus"></i> Novo Serviço
+                    </button>
+                </div>
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">ID</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Descrição</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Valor Mão de Obra</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="servicos-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Peças Page -->
+            <div id="page-pecas" class="page-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Peças</h2>
+                    <button onclick="openModal('peca-modal')" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                        <i class="fas fa-plus"></i> Nova Peça
+                    </button>
+                </div>
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">ID</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Nome</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Descrição</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Valor Unitário</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Estoque</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pecas-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ordens de Serviço Page -->
+            <div id="page-ordens-servico" class="page-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Ordens de Serviço</h2>
+                    <button onclick="openModal('os-modal')" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                        <i class="fas fa-plus"></i> Nova Ordem
+                    </button>
+                </div>
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">ID</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Data Abertura</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Veículo</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Equipe</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Status</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Valor Total</th>
+                                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordens-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Cliente -->
+    <div id="cliente-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-semibold" id="cliente-modal-title">Novo Cliente</h3>
+                <button onclick="closeModal('cliente-modal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="cliente-form" class="p-4 space-y-4">
+                <input type="hidden" id="cliente-id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
+                    <input type="text" id="cliente-nome" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">CPF *</label>
+                    <input type="text" id="cliente-cpf" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="000.000.000-00">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                    <input type="text" id="cliente-telefone" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="cliente-email" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Endereço</label>
+                    <input type="text" id="cliente-endereco" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal('cliente-modal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Veículo -->
+    <div id="veiculo-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-semibold" id="veiculo-modal-title">Novo Veículo</h3>
+                <button onclick="closeModal('veiculo-modal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="veiculo-form" class="p-4 space-y-4">
+                <input type="hidden" id="veiculo-id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Marca *</label>
+                    <input type="text" id="veiculo-marca" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Modelo *</label>
+                    <input type="text" id="veiculo-modelo" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ano *</label>
+                        <input type="number" id="veiculo-ano" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Placa *</label>
+                        <input type="text" id="veiculo-placa" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cor</label>
+                        <input type="text" id="veiculo-cor" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cliente *</label>
+                        <select id="veiculo-cliente" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal('veiculo-modal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Mecânico -->
+    <div id="mecanico-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-semibold" id="mecanico-modal-title">Novo Mecânico</h3>
+                <button onclick="closeModal('mecanico-modal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="mecanico-form" class="p-4 space-y-4">
+                <input type="hidden" id="mecanico-id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
+                    <input type="text" id="mecanico-nome" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">CPF *</label>
+                    <input type="text" id="mecanico-cpf" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="000.000.000-00">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Especialidade</label>
+                    <input type="text" id="mecanico-especialidade" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                    <input type="text" id="mecanico-telefone" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal('mecanico-modal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Equipe -->
+    <div id="equipe-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-semibold" id="equipe-modal-title">Nova Equipe</h3>
+                <button onclick="closeModal('equipe-modal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="equipe-form" class="p-4 space-y-4">
+                <input type="hidden" id="equipe-id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
+                    <input type="text" id="equipe-nome" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Mecânico Responsável *</label>
+                    <select id="equipe-mecanico" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                        <option value="">Selecione...</option>
+                    </select>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal('equipe-modal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Serviço -->
+    <div id="servico-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-semibold" id="servico-modal-title">Novo Serviço</h3>
+                <button onclick="closeModal('servico-modal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="servico-form" class="p-4 space-y-4">
+                <input type="hidden" id="servico-id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descrição *</label>
+                    <input type="text" id="servico-descricao" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Valor Mão de Obra (R$) *</label>
+                    <input type="number" id="servico-valor" required step="0.01" min="0" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal('servico-modal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Peça -->
+    <div id="peca-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-semibold" id="peca-modal-title">Nova Peça</h3>
+                <button onclick="closeModal('peca-modal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="peca-form" class="p-4 space-y-4">
+                <input type="hidden" id="peca-id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
+                    <input type="text" id="peca-nome" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+                    <input type="text" id="peca-descricao" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Valor Unitário (R$) *</label>
+                        <input type="number" id="peca-valor" required step="0.01" min="0" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Quantidade Estoque *</label>
+                        <input type="number" id="peca-estoque" required min="0" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal('peca-modal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Ordem de Serviço -->
+    <div id="os-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-semibold">Nova Ordem de Serviço</h3>
+                <button onclick="closeModal('os-modal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="os-form" class="p-4 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Veículo *</label>
+                        <select id="os-veiculo" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Equipe *</label>
+                        <select id="os-equipe" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Problema Relatado *</label>
+                    <textarea id="os-problema" required rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Observações</label>
+                    <textarea id="os-observacoes" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none"></textarea>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal('os-modal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors">Abrir Ordem</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detalhes da OS -->
+    <div id="os-detalhe-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between p-4 border-b sticky top-0 bg-white">
+                <h3 class="text-lg font-semibold">Detalhes da Ordem de Serviço</h3>
+                <button onclick="closeModal('os-detalhe-modal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-4" id="os-detalhe-content"></div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Scripts -->
+    <script src="JS/api.js"></script>
+    <script src="JS/main.js"></script>
+    <script src="JS/clientes.js"></script>
+    <script src="JS/veiculos.js"></script>
+    <script src="JS/mecanicos.js"></script>
+    <script src="JS/equipes.js"></script>
+    <script src="JS/servicos.js"></script>
+    <script src="JS/pecas.js"></script>
+    <script src="JS/ordens-servico.js"></script>
+</body>
+</html>
